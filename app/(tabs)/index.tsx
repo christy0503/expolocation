@@ -11,6 +11,8 @@ export default function HomeScreen() {
   const [loaded, setLoaded] = useState(true);
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [stationInfo, setStationInfo] = useState({ address: '', x: null, y: null });
+  
 
   const getAddressData = async (stationName) => {
     try {
@@ -19,19 +21,23 @@ export default function HomeScreen() {
       console.log(`Fetching data for station: ${stationName}, encoded: ${encoded}`);
       const res = await api.get(`/json?method=getStations&name=${encoded}`);
       console.log('API response:', res);
-      if (res.data.results && res.data.results.length > 0) {
-        setAddress(res.data.results[0].address);
+      if (res.data.response && res.data.response.station && res.data.response.station.length > 0) {
+        const station = res.data.response.station[0];
+        setStationInfo({
+          address: `${station.prefecture} ${station.name}駅`,
+          x: station.x,
+          y: station.y
+        });
       } else {
-        setAddress('No results found');
+        setStationInfo({ address: 'No results found', x: null, y: null });
       }
       setLoaded(true);
     } catch (error) {
       console.error('Error fetching station data:', error);
-      setAddress('Error fetching data');
+      setStationInfo({ address: 'Error fetching data', x: null, y: null });
       setLoaded(true);
     }
   };
-
   const getSuggestions = async (query) => {
     try {
       const encoded = encodeURIComponent(query);
@@ -119,10 +125,17 @@ export default function HomeScreen() {
               <Button title="Search" onPress={handleSearch} />
             </View>
             {!loaded ? (
-              <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-              <ThemedText>{address}</ThemedText>
-            )}
+  <ActivityIndicator size="large" color="#0000ff" />
+) : (
+  <View>
+    <ThemedText>{stationInfo.address}</ThemedText>
+    {stationInfo.x !== null && stationInfo.y !== null && (
+      <ThemedText>
+        座標: ({stationInfo.x.toFixed(6)}, {stationInfo.y.toFixed(6)})
+      </ThemedText>
+    )}
+  </View>
+)}
             <FlatList
               data={suggestions}
               keyExtractor={(item) => item}
