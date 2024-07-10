@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Animated, PanResponder,TouchableOpacity,Switch,TextInput,Keyboard} from 'react-native';
+import { View, Text, StyleSheet, Animated, PanResponder,TouchableOpacity,Switch,TextInput,Keyboard,Dimensions} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import MapView, { Marker } from 'react-native-maps';
+import axios from 'axios';
+
+
+
 
 interface SwipeToggleButtonProps {
   label: string;
@@ -57,7 +62,6 @@ const App: React.FC = () => {
   return (
     
     <View style={styles.container}>
-
       <View style={styles.alarmContainer}>
         <Text style={styles.alarmText}>アラーム音の選択</Text>
         <Picker
