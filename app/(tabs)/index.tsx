@@ -149,10 +149,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#fff',
   },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
+    backgroundColor: '#fff',
   },
   reactLogo: {
     height: 178,
@@ -203,7 +205,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -227,4 +229,3 @@ const styles = StyleSheet.create({
 });
 
 
-aaa
