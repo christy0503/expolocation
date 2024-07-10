@@ -62,7 +62,6 @@ const App: React.FC = () => {
   return (
     
     <View style={styles.container}>
-
       <View style={styles.alarmContainer}>
         <Text style={styles.alarmText}>アラーム音の選択</Text>
         <Picker

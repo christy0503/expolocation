@@ -12,7 +12,7 @@ export default function HomeScreen() {
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [stationInfo, setStationInfo] = useState({ address: '', x: null, y: null });
-  
+
 
   const getAddressData = async (stationName) => {
     try {
@@ -85,6 +85,7 @@ export default function HomeScreen() {
 
   const handleIconPress = () => {
     Alert.alert('アイコンが押されました', text);
+
   };
 
   return (
@@ -131,7 +132,7 @@ export default function HomeScreen() {
     <ThemedText>{stationInfo.address}</ThemedText>
     {stationInfo.x !== null && stationInfo.y !== null && (
       <ThemedText>
-        座標: ({stationInfo.x.toFixed(6)}, {stationInfo.y.toFixed(6)})
+        座標: ({stationInfo.x}, {stationInfo.y})
       </ThemedText>
     )}
   </View>
