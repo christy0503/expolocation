@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Animated, PanResponder,TouchableOpacity,Switch,TextInput,Keyboard,Dimensions} from 'react-native';
+import { View, Text, StyleSheet, Animated, PanResponder,TouchableOpacity,Switch,TextInput,Keyboard,Dimensions,Button,Alert} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import MapView, { Marker } from 'react-native-maps';
 import axios from 'axios';
@@ -37,17 +37,17 @@ const SwipeToggleButton: React.FC<SwipeToggleButtonProps> = ({ label }) => {
     },
   });
 
-  return (
-    <View style={styles.switchWrapper}>
-      <Text style={styles.label}>{label}</Text>
-      <View style={styles.switchContainer}>
-        <Animated.View
-          style={[styles.switch, position.getLayout()]}
-          {...panResponder.panHandlers}
-        />
-      </View>
-    </View>
-  );
+  // return (
+  //   <View style={styles.switchWrapper}>
+  //     <Text style={styles.label}>{label}</Text>
+  //     <View style={styles.switchContainer}>
+  //       <Animated.View
+  //         style={[styles.switch, position.getLayout()]}
+  //         {...panResponder.panHandlers}
+  //       />
+  //     </View>
+  //   </View>
+  // );
 };
 
 const App: React.FC = () => {
@@ -57,11 +57,35 @@ const App: React.FC = () => {
   const [selectedProblems, setSelectedProblems] = useState(0);
   const toggleAlarmSwitch = () => setIsAlarmOn(previousState => !previousState);
   const toggleNotificationSwitch = () => setIsNotificationOn(previousState => !previousState);
-
+  
+  const distance = () => {
+    Alert.alert('固定ボタンが押されました');
+  };
+  const distance1 = () => {
+    Alert.alert('固定ボタンが押されました');
+  };const distance3 = () => {
+    Alert.alert('固定ボタンが押されました');
+  };const distance5 = () => {
+    Alert.alert('固定ボタンが押されました');
+  };
 
   return (
     
     <View style={styles.container}>
+          <View style={styles.distance}>
+        <View style={styles.distanceButton}>
+          <Button title="500m" onPress={distance} color="#459554" />
+        </View>
+        <View style={styles.distanceButton}>
+          <Button title="1km" onPress={distance1} color="#459554" />
+        </View>
+        <View style={styles.distanceButton}>
+          <Button title="3km" onPress={distance3} color="#459554" />
+        </View>
+        <View style={styles.distanceButton}>
+          <Button title="5km" onPress={distance5} color="#459554" />
+        </View>
+      </View>
       <View style={styles.alarmContainer}>
         <Text style={styles.alarmText}>アラーム音の選択</Text>
         <Picker
@@ -171,6 +195,14 @@ const styles = StyleSheet.create({
   alarmText: {
     fontSize: 14,
     marginRight: 'auto',
+  },
+  distance:{
+    justifyContent: 'center',
+    flexDirection: 'row', // 横並びにするための指定
+
+  },
+  distanceButton: {
+    margin: 10,
   },
 });
 

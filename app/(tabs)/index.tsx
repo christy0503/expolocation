@@ -5,6 +5,24 @@ import { api } from '@/utils/axios';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+// import LikePage from './Like.tsx'; // replace with your actual file
+
+
+const Stack = createStackNavigator();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="LikePage" component={LikePage} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default function HomeScreen() {
   const [address, setAddress] = useState();
@@ -12,6 +30,7 @@ export default function HomeScreen() {
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [stationInfo, setStationInfo] = useState({ address: '', x: null, y: null });
+  const navigation = useNavigation();
 
 
   const getAddressData = async (stationName) => {
@@ -81,6 +100,7 @@ export default function HomeScreen() {
 
   const handleFixedButtonPress = () => {
     Alert.alert('固定ボタンが押されました');
+    navigation.navigate('LikePage'); // 确保名称与导航器中定义的一致
   };
 
   const handleIconPress = () => {
@@ -162,20 +182,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
   },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
-    backgroundColor: '#fff',
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
   },
   logo: {
     justifyContent: 'center',
@@ -219,7 +229,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -241,5 +251,3 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
 });
-
-
