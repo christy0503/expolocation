@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, TextInput, Button, Alert, TouchableOpacity, View, ScrollView, FlatList, ActivityIndicator, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { api } from '@/utils/axios';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -8,21 +7,9 @@ import { ThemedView } from '@/components/ThemedView';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
+import {Ionicons} from '@expo/vector-icons'
 // import LikePage from './Like.tsx'; // replace with your actual file
-
-
-const Stack = createStackNavigator();
-
-function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="LikePage" component={LikePage} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
 
 export default function HomeScreen() {
   const [address, setAddress] = useState();
@@ -47,6 +34,7 @@ export default function HomeScreen() {
           x: station.x,
           y: station.y
         });
+        router.replace("/explore");
       } else {
         setStationInfo({ address: 'No results found', x: null, y: null });
       }
@@ -133,7 +121,7 @@ export default function HomeScreen() {
             <View style={styles.inputContainer}>
               <TouchableOpacity onPress={handleIconPress} style={styles.iconButton}>
                 <View style={styles.iconCircle}>
-                  <Icon name="search" size={20} color="#ffffff" />
+                  <Ionicons name="search" size={20} color="#ffffff" />
                 </View>
               </TouchableOpacity>
               <TextInput
