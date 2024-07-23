@@ -1,114 +1,128 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, TextInput, Button, Alert, TouchableOpacity, View, ScrollView, FlatList, ActivityIndicator, Text } from 'react-native';
-import { api } from '@/utils/axios';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
-import { router } from 'expo-router';
-import {Ionicons} from '@expo/vector-icons'
+import React, { useState } from "react";
+import {
+  Image,
+  StyleSheet,
+  TextInput,
+  Button,
+  Alert,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  FlatList,
+  Text,
+} from "react-native";
+import { api } from "@/utils/axios";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import useStationStore from "@/utils/store";
 // import LikePage from './Like.tsx'; // replace with your actual file
 
 export default function HomeScreen() {
   const [address, setAddress] = useState();
   const [loaded, setLoaded] = useState(true);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [stationInfo, setStationInfo] = useState({ address: '', x: null, y: null });
   const navigation = useNavigation();
+  const { stationInfo } = useStationStore();
+  const setStationInfo = useStationStore((state) => state.setStationInfo);
 
-
-  const getAddressData = async (stationName) => {
+  const getAddressData = async (stationName: string) => {
     try {
       setLoaded(false);
       const encoded = encodeURIComponent(stationName);
-      console.log(`Fetching data for station: ${stationName}, encoded: ${encoded}`);
+      console.log(
+        `Fetching data for station: ${stationName}, encoded: ${encoded}`
+      );
       const res = await api.get(`/json?method=getStations&name=${encoded}`);
-      console.log('API response:', res);
-      if (res.data.response && res.data.response.station && res.data.response.station.length > 0) {
+      console.log("API response:", res);
+      if (
+        res.data.response &&
+        res.data.response.station &&
+        res.data.response.station.length > 0
+      ) {
         const station = res.data.response.station[0];
         setStationInfo({
           address: `${station.prefecture} ${station.name}駅`,
           x: station.x,
-          y: station.y
+          y: station.y,
         });
-        router.replace("/explore");
+        router.push("/explore");
       } else {
-        setStationInfo({ address: 'No results found', x: null, y: null });
+        setStationInfo({ address: "No results found", x: 0, y: 0 });
       }
       setLoaded(true);
     } catch (error) {
-      console.error('Error fetching station data:', error);
-      setStationInfo({ address: 'Error fetching data', x: null, y: null });
+      console.error("Error fetching station data:", error);
+      setStationInfo({ address: "Error fetching data", x: 0, y: 0 });
       setLoaded(true);
     }
   };
-  const getSuggestions = async (query) => {
+  const getSuggestions = async (query: string) => {
     try {
       const encoded = encodeURIComponent(query);
-      const res = await api.get(`/json?method=getStationSuggestions&name=${encoded}`);
-      console.log('Suggestions response:', res);
+      const res = await api.get(
+        `/json?method=getStationSuggestions&name=${encoded}`
+      );
+      console.log("Suggestions response:", res);
       if (res.data.suggestions) {
         setSuggestions(res.data.suggestions);
       } else {
         setSuggestions([]);
       }
     } catch (error) {
-      console.error('Error fetching suggestions:', error);
+      console.error("Error fetching suggestions:", error);
       setSuggestions([]);
     }
   };
 
-  const handleSearchChange = (text) => {
+  const handleSearchChange = (text: string) => {
     setText(text); // Update text state instead of search state
-    if (text.trim() !== '') {
+    if (text.trim() !== "") {
       getSuggestions(text);
     } else {
       setSuggestions([]);
     }
   };
 
-  const handleSuggestionPress = (suggestion) => {
-    setSearch(suggestion);
+  const handleSuggestionPress = (suggestion: string) => {
+    // setSearch(suggestion);
     setSuggestions([]);
     getAddressData(suggestion);
   };
 
   const handleSearch = () => {
-    if (text.trim() !== '') {
+    if (text.trim() !== "") {
       getAddressData(text); // Use text state directly
     }
   };
 
   const handlePress = () => {
-    Alert.alert('入力されたテキスト', text);
+    Alert.alert("入力されたテキスト", text);
   };
 
   const handleFixedButtonPress = () => {
-    Alert.alert('固定ボタンが押されました');
-    navigation.navigate('LikePage'); // 确保名称与导航器中定义的一致
+    Alert.alert("固定ボタンが押されました");
+    // navigation.navigate("LikePage"); // 确保名称与导航器中定义的一致
   };
 
   const handleIconPress = () => {
-    Alert.alert('アイコンが押されました', text);
-
+    Alert.alert("アイコンが押されました", text);
   };
 
   return (
     <View style={{ flex: 1 }}>
       <ParallaxScrollView
-        headerBackgroundColor={{ light: '#ffffff', dark: '#1D3D47' }}
-        headerImage={
-          <Image
-            style={styles.reactLogo}
-          />
-        }>
+        headerBackgroundColor={{ light: "#ffffff", dark: "#1D3D47" }}
+        headerImage={<Image />}
+      >
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="title">
             <Image
-              source={require('@/assets/images/logo1.png')}
+              source={require("@/assets/images/logo1.png")}
               style={styles.logo}
             />
           </ThemedText>
@@ -119,7 +133,10 @@ export default function HomeScreen() {
         >
           <ThemedView style={styles.stepContainer}>
             <View style={styles.inputContainer}>
-              <TouchableOpacity onPress={handleIconPress} style={styles.iconButton}>
+              <TouchableOpacity
+                onPress={handleIconPress}
+                style={styles.iconButton}
+              >
                 <View style={styles.iconCircle}>
                   <Ionicons name="search" size={20} color="#ffffff" />
                 </View>
@@ -133,18 +150,6 @@ export default function HomeScreen() {
               />
               <Button title="Search" onPress={handleSearch} />
             </View>
-            {!loaded ? (
-  <ActivityIndicator size="large" color="#0000ff" />
-) : (
-  <View>
-    <ThemedText>{stationInfo.address}</ThemedText>
-    {stationInfo.x !== null && stationInfo.y !== null && (
-      <ThemedText>
-        座標: ({stationInfo.x}, {stationInfo.y})
-      </ThemedText>
-    )}
-  </View>
-)}
             <FlatList
               data={suggestions}
               keyExtractor={(item) => item}
@@ -158,7 +163,10 @@ export default function HomeScreen() {
           </ThemedView>
         </ScrollView>
       </ParallaxScrollView>
-      <TouchableOpacity style={styles.fixedButton} onPress={handleFixedButtonPress}>
+      <TouchableOpacity
+        style={styles.fixedButton}
+        onPress={handleFixedButtonPress}
+      >
         <ThemedText style={styles.buttonText}>♡</ThemedText>
       </TouchableOpacity>
     </View>
@@ -167,31 +175,31 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   stepContainer: {
     gap: 8,
     marginBottom: 8,
   },
   logo: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   contentContainer: {
     flexGrow: 1,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: '#459554',
+    flexDirection: "row",
+    alignItems: "center",
+    borderColor: "#459554",
     borderWidth: 1,
     borderRadius: 40,
     paddingHorizontal: 8,
-    width: '100%',
+    width: "100%",
     marginBottom: 8,
-    shadowColor: '#c0c0c0',
+    shadowColor: "#c0c0c0",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 1,
@@ -207,35 +215,35 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#459554', // Background color of the circle
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#459554', // Border color of the circle
+    backgroundColor: "#459554", // Background color of the circle
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "#459554", // Border color of the circle
     borderWidth: 1,
   },
   fixedButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     right: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     width: 60,
     height: 60,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#c0c0c0',
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#c0c0c0",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 3,
     elevation: 5,
   },
   buttonText: {
-    color: '#F99FAF',
+    color: "#F99FAF",
     fontSize: 26,
   },
   suggestion: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
 });
