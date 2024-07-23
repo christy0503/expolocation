@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Button } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker,Circle } from 'react-native-maps';
 
 // 例としてのAPIコール関数（実際のAPIエンドポイントに置き換えてください）
 const fetchCoordinates = async () => {

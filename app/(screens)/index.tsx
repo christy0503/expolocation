@@ -19,7 +19,6 @@ import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import useStationStore from "@/utils/store";
-// import LikePage from './Like.tsx'; // replace with your actual file
 
 export default function HomeScreen() {
   const [address, setAddress] = useState();
@@ -105,8 +104,7 @@ export default function HomeScreen() {
   };
 
   const handleFixedButtonPress = () => {
-    Alert.alert("固定ボタンが押されました");
-    // navigation.navigate("LikePage"); // 确保名称与导航器中定义的一致
+    router.push("/like");
   };
 
   const handleIconPress = () => {

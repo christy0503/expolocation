@@ -1,8 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Switch, Button, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Switch, Button, Alert,TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Circle } from "react-native-maps";
 import useStationStore from "@/utils/store";
+import * as Location from 'expo-location'; 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
+
 
 const App: React.FC = () => {
   const [isAlarmOn, setIsAlarmOn] = useState(false);
@@ -10,46 +13,114 @@ const App: React.FC = () => {
   const [selectedSound, setSelectedSound] = useState("");
   const [selectedProblems, setSelectedProblems] = useState(0);
   const { stationInfo } = useStationStore();
+  const [circleRadius, setCircleRadius] = useState(0);
+  const [region, setRegion] = useState({
+    latitude: stationInfo ? stationInfo.y : 37.78825, 
+    longitude: stationInfo ? stationInfo.x : -122.4324, 
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
+  const [userLocation, setUserLocation] = useState(null);
+  const [isTracking, setIsTracking] = useState(false); 
+
+  useEffect(() => {
+    if (isTracking) {
+      const getLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission to access location was denied');
+          return;
+        }
+        const location = await Location.getCurrentPositionAsync({});
+        setUserLocation(location.coords);
+      };
+
+      const interval = setInterval(() => {
+        getLocation(); // ユーザ位置情報
+        if (userLocation) {
+          checkIfInsideCircle(); 
+        }
+      }, 1000); 
+
+      return () => clearInterval(interval);
+    }
+  }, [isTracking, userLocation, region, circleRadius]);
+
+  const setRadius = (radius: number) => {
+    Alert.alert(` ${radius} メートル`);
+    const scaleFactor = 0.00002;
+    setCircleRadius(radius);
+    setRegion({
+      ...region,
+      latitudeDelta: radius * scaleFactor,
+      longitudeDelta: radius * scaleFactor,
+    });
+  };
+
+  const checkIfInsideCircle = () => {
+    if (!userLocation) return;
+    const distance = getDistance(
+      { latitude: region.latitude, longitude: region.longitude },
+      { latitude: userLocation.latitude, longitude: userLocation.longitude }
+    );
+    if (distance <= circleRadius) {
+      Alert.alert('You are inside the circle!');
+    }
+  };
+
+  const getDistance = (point1, point2) => {
+    const toRad = (value) => value * Math.PI / 180;
+    const lat1 = point1.latitude;
+    const lon1 = point1.longitude;
+    const lat2 = point2.latitude;
+    const lon2 = point2.longitude;
+    const R = 6371000; // 地球の半径 (米)
+
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
   const toggleAlarmSwitch = () =>
     setIsAlarmOn((previousState) => !previousState);
   const toggleNotificationSwitch = () =>
     setIsNotificationOn((previousState) => !previousState);
-  const distance = () => {
-    Alert.alert("固定ボタンが押されました");
-  };
-  const distance1 = () => {
-    Alert.alert("固定ボタンが押されました");
-  };
-  const distance3 = () => {
-    Alert.alert("固定ボタンが押されました");
-  };
-  const distance5 = () => {
-    Alert.alert("固定ボタンが押されました");
-  };
-  const region = {
-    latitude: stationInfo ? stationInfo.y : 37.78825, // 初期値
-    longitude: stationInfo ? stationInfo.x : -122.4324, // 初期値
-    latitudeDelta: 0.00422,
-    longitudeDelta: 0.00421,
+
+  const startTracking = () => {
+    setIsTracking(true);
+    Alert.alert('Started tracking your location.');
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.distance}>
         <View style={styles.distanceButton}>
-          <Button title="500m" onPress={distance} color="#459554" />
+          <Button title="500m" onPress={() => setRadius(500)} color="#459554" />
         </View>
         <View style={styles.distanceButton}>
-          <Button title="1km" onPress={distance1} color="#459554" />
+          <Button title="1km" onPress={() => setRadius(1000)} color="#459554" />
         </View>
         <View style={styles.distanceButton}>
-          <Button title="3km" onPress={distance3} color="#459554" />
+          <Button title="3km" onPress={() => setRadius(3000)} color="#459554" />
         </View>
         <View style={styles.distanceButton}>
-          <Button title="5km" onPress={distance5} color="#459554" />
+          <Button title="5km" onPress={() => setRadius(5000)} color="#459554" />
         </View>
       </View>
-      <MapView style={styles.map} region={region}></MapView>
+      <MapView style={styles.map} region={region}>
+        {circleRadius > 0 && (
+          <Circle
+            center={{ latitude: region.latitude, longitude: region.longitude }}
+            radius={circleRadius}
+            strokeColor="rgba(0,0,255,0.5)"
+            fillColor="rgba(0,0,255,0.1)"
+          />
+        )}
+      </MapView>
       <View style={styles.alarmContainer}>
         <Text style={styles.alarmText}>アラーム音の選択</Text>
         <RNPickerSelect
@@ -67,7 +138,7 @@ const App: React.FC = () => {
           onValueChange={(value) => setSelectedProblems(value)}
           items={[
             { label: "1", value: "1" },
-            { label: "2", value: "" },
+            { label: "2", value: "2" },
             { label: "3", value: "3" },
           ]}
         />
@@ -92,7 +163,15 @@ const App: React.FC = () => {
           value={isNotificationOn}
         />
       </View>
-      {/* <Button title="PRESS ME!!!!!" onPress={setL}></Button> */}
+      {/* <View style={styles.startButton}>
+        <Button title="START" onPress={startTracking} color="#fff" />
+      </View> */}
+      <View style={styles.startButton}>
+  <TouchableOpacity style={styles.startButtonContent} onPress={startTracking}>
+    <Icon name="alarm" size={20} color="#fff" style={styles.icon} />
+    <Text style={styles.startButtonText}>START</Text>
+  </TouchableOpacity>
+</View>
     </View>
   );
 };
@@ -137,10 +216,8 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   picker: {
-    // height: 30,
-    // width: 100,
-    flex: 1, // Picker 组件占据剩余空间
-    marginLeft: 10, // 左侧间距
+    flex: 1,
+    marginLeft: 10,
   },
   alarmContainer: {
     flexDirection: "row",
@@ -162,10 +239,30 @@ const styles = StyleSheet.create({
   },
   distance: {
     justifyContent: "center",
-    flexDirection: "row", // 横並びにするための指定
+    flexDirection: "row",
   },
   distanceButton: {
     margin: 10,
+  },
+  startButton: {
+    borderRadius: 20,
+    backgroundColor: "#459554",
+    margin: 10,
+    width: 120,
+    alignItems: 'center',
+  },
+  startButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  startButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    marginLeft: 5,
+  },
+  icon: {
+    marginRight: 5,
   },
 });
 
