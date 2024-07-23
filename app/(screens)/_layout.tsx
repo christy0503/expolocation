@@ -16,7 +16,7 @@ export default function TabLayout() {
       <Stack.Screen name='index' options={{headerShown:false}}/>
       <Stack.Screen name='explore' options={{headerLeft: ()=>(
         <TouchableOpacity onPress={backToIndex}>
-          <Ionicons name='arrow-back' color={"#fff"} size={20} />
+          <Ionicons name='arrow-back' color={"#000"} size={20} />
         </TouchableOpacity>
       )}} />
     </Stack>

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Animated, PanResponder,TouchableOpacity,Switch,TextInput,Keyboard,Dimensions,Button,Alert} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Animated, PanResponder,TouchableOpacity,Switch,TextInput,Keyboard,Dimensions,Button,Alert, LogBox} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import MapView, { Marker } from 'react-native-maps';
-import axios from 'axios';
 
 
 
@@ -50,6 +49,13 @@ const SwipeToggleButton: React.FC<SwipeToggleButtonProps> = ({ label }) => {
   // );
 };
 
+const fetchCoordinates = async () => {
+  return {
+    latitude: 35.6895,
+    longitude: 139.6917
+  };
+};
+
 const App: React.FC = () => {
   const [isAlarmOn, setIsAlarmOn] = useState(false);
   const [isNotificationOn, setIsNotificationOn] = useState(false);
@@ -57,7 +63,6 @@ const App: React.FC = () => {
   const [selectedProblems, setSelectedProblems] = useState(0);
   const toggleAlarmSwitch = () => setIsAlarmOn(previousState => !previousState);
   const toggleNotificationSwitch = () => setIsNotificationOn(previousState => !previousState);
-  
   const distance = () => {
     Alert.alert('固定ボタンが押されました');
   };
@@ -68,10 +73,24 @@ const App: React.FC = () => {
   };const distance5 = () => {
     Alert.alert('固定ボタンが押されました');
   };
+  const [region, setRegion] = useState({
+      latitude: 37.78825, // 初期値
+      longitude: -122.4324, // 初期値
+      latitudeDelta: 0.00422,
+      longitudeDelta: 0.00421
+    });
+
+    const setL = () =>{
+      setRegion({
+        latitude:35.63246781969533, 
+        longitude: 139.88031655987018,
+        latitudeDelta: region.latitudeDelta,
+        longitudeDelta: region.longitudeDelta
+      })
+    }
 
   return (
-    
-    <View style={styles.container}>
+      <View style={styles.container}>
           <View style={styles.distance}>
         <View style={styles.distanceButton}>
           <Button title="500m" onPress={distance} color="#459554" />
@@ -132,6 +151,13 @@ const App: React.FC = () => {
           value={isNotificationOn}
         />
       </View>
+      <MapView
+        style={styles.map}
+        region={region}
+        onRegionChangeComplete={setRegion}
+      >
+      </MapView>
+      <Button title='PRESS ME!!!!!' onPress={setL}></Button>
     </View>
   );
 };
@@ -195,6 +221,12 @@ const styles = StyleSheet.create({
   alarmText: {
     fontSize: 14,
     marginRight: 'auto',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    width: 'auto',
+    height: '35%',
+    marginTop: '32%',
   },
   distance:{
     justifyContent: 'center',
