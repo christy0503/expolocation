@@ -5,9 +5,53 @@ import MapView, { Circle } from "react-native-maps";
 import useStationStore from "@/utils/store";
 import * as Location from 'expo-location'; 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
+import { Audio } from 'expo-av';
 
 
-const App: React.FC = () => {
+const soundFiles = {
+  "sound1.mp3": require('../../assets/sounds/sound1.mp3'),
+  "sound2.mp3": require('../../assets/sounds/sound2.mp3'),
+  "sound3.mp3": require('../../assets/sounds/sound3.mp3'),
+  "sound4.mp3": require('../../assets/sounds/sound4.mp3'),
+  "sound5.mp3": require('../../assets/sounds/sound5.mp3'),
+};
+
+const AlarmPicker = () => {
+  const [selectedSound, setSelectedSound] = useState(null);
+  const [sound, setSound] = useState<Audio.Sound | undefined>(undefined);
+
+  const playSound = async (soundFile) => {
+    const { sound } = await Audio.Sound.createAsync(soundFiles[soundFile]);
+    setSound(sound);
+    await sound.playAsync();
+  };
+
+  const handleValueChange = async (value) => {
+    setSelectedSound(value);
+    if (sound) {
+      await sound.unloadAsync();
+    }
+    playSound(value);
+  };
+
+  return (
+    <View style={styles.alarmContainer}>
+      <Text style={styles.alarmText}>アラーム音の選択</Text>
+      <RNPickerSelect
+        onValueChange={handleValueChange}
+        items={[
+          { label: "Sound1", value: "sound1.mp3" },
+          { label: "Sound2", value: "sound2.mp3" },
+          { label: "Sound3", value: "sound3.mp3" },
+          { label: "Sound4", value: "sound4.mp3" },
+          { label: "Sound5", value: "sound5.mp3" },
+        ]}
+      />
+    </View>
+  );
+};
+
+const App = () => {
   const [isAlarmOn, setIsAlarmOn] = useState(false);
   const [isNotificationOn, setIsNotificationOn] = useState(false);
   const [selectedSound, setSelectedSound] = useState("");
@@ -46,8 +90,8 @@ const App: React.FC = () => {
     }
   }, [isTracking, userLocation, region, circleRadius]);
 
-  const setRadius = (radius: number) => {
-    Alert.alert(` ${radius} メートル`);
+  const setRadius = (radius) => {
+    Alert.alert(`${radius} メートル`);
     const scaleFactor = 0.00002;
     setCircleRadius(radius);
     setRegion({
@@ -85,10 +129,8 @@ const App: React.FC = () => {
     return R * c;
   };
 
-  const toggleAlarmSwitch = () =>
-    setIsAlarmOn((previousState) => !previousState);
-  const toggleNotificationSwitch = () =>
-    setIsNotificationOn((previousState) => !previousState);
+  const toggleAlarmSwitch = () => setIsAlarmOn((previousState) => !previousState);
+  const toggleNotificationSwitch = () => setIsNotificationOn((previousState) => !previousState);
 
   const startTracking = () => {
     setIsTracking(true);
@@ -121,25 +163,16 @@ const App: React.FC = () => {
           />
         )}
       </MapView>
-      <View style={styles.alarmContainer}>
-        <Text style={styles.alarmText}>アラーム音の選択</Text>
-        <RNPickerSelect
-          onValueChange={(value) => setSelectedSound(value)}
-          items={[
-            { label: "Sound1", value: "sound1" },
-            { label: "Sound2", value: "sound2" },
-            { label: "Sound3", value: "sound3" },
-          ]}
-        />
-      </View>
+      <AlarmPicker />
       <View style={styles.alarmContainer}>
         <Text style={styles.alarmText}>計算問題数の選択</Text>
         <RNPickerSelect
           onValueChange={(value) => setSelectedProblems(value)}
           items={[
+            { label: "0", value: "0" },
             { label: "1", value: "1" },
-            { label: "2", value: "2" },
             { label: "3", value: "3" },
+            { label: "5", value: "5" },
           ]}
         />
       </View>
@@ -154,7 +187,7 @@ const App: React.FC = () => {
         />
       </View>
       <View style={styles.alarmContainer}>
-        <Text style={styles.alarmText}>おきにいり登録</Text>
+        <Text style={styles.alarmText}>お気に入り登録</Text>
         <Switch
           trackColor={{ false: "#ffffff", true: "#4ed164" }}
           thumbColor={isNotificationOn ? "#ffffff" : "#ffffff"}
@@ -163,19 +196,15 @@ const App: React.FC = () => {
           value={isNotificationOn}
         />
       </View>
-      {/* <View style={styles.startButton}>
-        <Button title="START" onPress={startTracking} color="#fff" />
-      </View> */}
       <View style={styles.startButton}>
-  <TouchableOpacity style={styles.startButtonContent} onPress={startTracking}>
-    <Icon name="alarm" size={20} color="#fff" style={styles.icon} />
-    <Text style={styles.startButtonText}>START</Text>
-  </TouchableOpacity>
-</View>
+        <TouchableOpacity style={styles.startButtonContent} onPress={startTracking}>
+          <Icon name="alarm" size={20} color="#fff" style={styles.icon} />
+          <Text style={styles.startButtonText}>START</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
