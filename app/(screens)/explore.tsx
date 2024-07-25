@@ -6,6 +6,8 @@ import useStationStore from "@/utils/store";
 import * as Location from 'expo-location'; 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import { Audio } from 'expo-av';
+import { router } from "expo-router";
+
 
 
 const soundFiles = {
@@ -44,7 +46,7 @@ const AlarmPicker = () => {
           { label: "Sound2", value: "sound2.mp3" },
           { label: "Sound3", value: "sound3.mp3" },
           { label: "Sound4", value: "sound4.mp3" },
-          { label: "Sound5", value: "sound5.mp3" },
+          { label: "上がり激しくなるアラーム音", value: "sound5.mp3" },
         ]}
       />
     </View>
@@ -65,7 +67,7 @@ const App = () => {
     longitudeDelta: 0.01,
   });
   const [userLocation, setUserLocation] = useState(null);
-  const [isTracking, setIsTracking] = useState(false); 
+  const [isTracking, setIsTracking] = useState(true); 
 
   useEffect(() => {
     if (isTracking) {
@@ -102,13 +104,15 @@ const App = () => {
   };
 
   const checkIfInsideCircle = () => {
-    if (!userLocation) return;
+    if (!userLocation || !isTracking) return; // 如果沒有用戶位置或檢查已經停止，則返回
     const distance = getDistance(
       { latitude: region.latitude, longitude: region.longitude },
       { latitude: userLocation.latitude, longitude: userLocation.longitude }
     );
     if (distance <= circleRadius) {
-      Alert.alert('You are inside the circle!');
+      // 停止進一步的檢查
+      setIsTracking(false);
+      router.push("/problem"); // 導航到 /problem 頁面
     }
   };
 
