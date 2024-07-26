@@ -39,6 +39,7 @@ const AlarmPicker = () => {
   return (
     <View style={styles.alarmContainer}>
       <Text style={styles.alarmText}>アラーム音の選択</Text>
+      <View style={styles.selectContainer}>
       <RNPickerSelect
         onValueChange={handleValueChange}
         items={[
@@ -49,6 +50,7 @@ const AlarmPicker = () => {
           { label: "激しくなり響く", value: "sound5.mp3" },
         ]}
       />
+      </View>
     </View>
   );
 };
@@ -170,7 +172,8 @@ const App = () => {
       <AlarmPicker />
       <View style={styles.alarmContainer}>
         <Text style={styles.alarmText}>計算問題数の選択</Text>
-        <RNPickerSelect
+        <View style={styles.selectContainer}>
+        <RNPickerSelect 
           onValueChange={(value) => setSelectedProblems(value)}
           items={[
             { label: "0", value: "0" },
@@ -179,18 +182,19 @@ const App = () => {
             { label: "5", value: "5" },
           ]}
         />
+        </View>
       </View>
-      <View style={styles.alarmContainer}>
+      <View style={styles.alarmContainer2}>
         <Text style={styles.alarmText}>自動アラーム</Text>
-        <Switch
-          trackColor={{ false: "#ffffff", true: "#4ed164" }}
+        <Switch style={styles.toggleAlarmSwitch}
+          trackColor={{ false: "#ffffff", true: "#459554" }}
           thumbColor={isAlarmOn ? "#ffffff" : "#ffffff"}
           ios_backgroundColor="#ffffff"
           onValueChange={toggleAlarmSwitch}
           value={isAlarmOn}
         />
       </View>
-      <View style={styles.alarmContainer}>
+      {/* <View style={styles.alarmContainer}>
         <Text style={styles.alarmText}>お気に入り登録</Text>
         <Switch
           trackColor={{ false: "#ffffff", true: "#4ed164" }}
@@ -199,10 +203,10 @@ const App = () => {
           onValueChange={toggleNotificationSwitch}
           value={isNotificationOn}
         />
-      </View>
+      </View> */}
       <View style={styles.startButton}>
         <TouchableOpacity style={styles.startButtonContent} onPress={startTracking}>
-          <Icon name="alarm" size={20} color="#fff" style={styles.icon} />
+          <Icon name="alarm" size={25} color="#fff" style={styles.icon} />
           <Text style={styles.startButtonText}>START</Text>
         </TouchableOpacity>
       </View>
@@ -215,24 +219,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-  },
-  switchWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    marginRight: 10,
-  },
-  switchContainer: {
-    width: 50,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "#ddd",
-    justifyContent: "center",
-    padding: 3,
-  },
+    },
+  // switchContainer: {
+  //   width: 50,
+  //   height: 20,
+  //   borderRadius: 10,
+  //   backgroundColor: "#ddd",
+  //   justifyContent: "center",
+  //   padding: 3,
+  // },
   switch: {
     width: 20,
     height: 20,
@@ -258,24 +253,48 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderWidth: 1,
     borderColor: "#459554",
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 13,
+    paddingTop: 10,
+    paddingBottom:10,
+    paddingLeft:20,
     width: "80%",
+    height:"6%",
+  },
+  alarmContainer2:{
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: "#459554",
+    borderRadius: 13,
+    paddingTop: 10,
+    paddingBottom:10,
+    paddingLeft:20,
+    width: "80%",
+    height:"6%",
   },
   alarmText: {
-    fontSize: 14,
+    fontSize: 18,
     marginRight: "auto",
   },
   map: {
     width: "100%",
     height: "35%",
+    top:-20,
   },
   distance: {
     justifyContent: "center",
     flexDirection: "row",
+    top:-40,
   },
   distanceButton: {
-    margin: 10,
+    borderColor:"#459554",
+    borderStyle:'solid',
+    borderWidth:1,
+    borderRadius: 10,
+    margin:'2%',
+    paddingLeft:'4%',
+    paddingRight:'4%',
   },
   startButton: {
     borderRadius: 20,
@@ -283,6 +302,7 @@ const styles = StyleSheet.create({
     margin: 10,
     width: 120,
     alignItems: 'center',
+    top:10,
   },
   startButtonContent: {
     flexDirection: 'row',
@@ -295,8 +315,17 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   icon: {
-    marginRight: 5,
+    marginRight: 10,
+    borderRadius:0,
   },
+  toggleAlarmSwitch:{
+    top:0,
+    right:'100%',
+  },
+  selectContainer:{
+    top:0,
+    right:'40%',
+  }
 });
 
 export default App;

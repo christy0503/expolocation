@@ -135,9 +135,6 @@ export default function HomeScreen() {
                 onPress={handleIconPress}
                 style={styles.iconButton}
               >
-                <View style={styles.iconCircle}>
-                  <Ionicons name="search" size={20} color="#ffffff" />
-                </View>
               </TouchableOpacity>
               <TextInput
                 style={styles.input}
@@ -146,7 +143,9 @@ export default function HomeScreen() {
                 placeholderTextColor="#c0c0c0"
                 onChangeText={handleSearchChange}
               />
-              <Button title="Search" onPress={handleSearch} />
+              <TouchableOpacity onPress={handleSearch}>
+              <Image source={require("@/assets/images/search.png")} alt="" />
+              </TouchableOpacity>
             </View>
             <FlatList
               data={suggestions}
@@ -157,16 +156,16 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               )}
             />
-            <ThemedText>入力したテキスト: {text}</ThemedText>
+            {/* <ThemedText>入力したテキスト: {text}</ThemedText> */}
           </ThemedView>
         </ScrollView>
       </ParallaxScrollView>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.fixedButton}
         onPress={handleFixedButtonPress}
       >
         <ThemedText style={styles.buttonText}>♡</ThemedText>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
@@ -204,7 +203,8 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 40,
+    height: 50,
+    fontSize:18,
   },
   iconButton: {
     padding: 8,
