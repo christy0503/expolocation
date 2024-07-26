@@ -83,7 +83,7 @@ function App() {
           <Text style={styles.number}>0</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleBackspace}>
-              <Image source={require("@/assets/images/backspeace.png")} alt="" />
+        <Image style={styles.backspeace} source={require("@/assets/images/backspeace.png")} alt="" />
         </TouchableOpacity>
         </View>
       </View>
