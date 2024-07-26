@@ -42,11 +42,11 @@ const AlarmPicker = () => {
       <RNPickerSelect
         onValueChange={handleValueChange}
         items={[
-          { label: "Sound1", value: "sound1.mp3" },
-          { label: "Sound2", value: "sound2.mp3" },
-          { label: "Sound3", value: "sound3.mp3" },
-          { label: "Sound4", value: "sound4.mp3" },
-          { label: "上がり激しくなるアラーム音", value: "sound5.mp3" },
+          { label: "可愛い女の子の声", value: "sound1.mp3" },
+          { label: "デジタル時計1", value: "sound2.mp3" },
+          { label: "デジタル時計2", value: "sound4.mp3" },
+          { label: "アナログ時計", value: "sound3.mp3" },
+          { label: "激しくなり響く", value: "sound5.mp3" },
         ]}
       />
     </View>

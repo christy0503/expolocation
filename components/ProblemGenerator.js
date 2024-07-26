@@ -59,9 +59,9 @@ const ProblemGenerator = (input) => {
 
     return (
         <View>
-            <View style={{justifyContent: 'center', alignItems: 'center', position: 'relative' , width:'100%',height: '250' , top: '5%', margintop: '10%',}}>
+            <View style={{justifyContent: 'center', alignItems: 'center', position: 'relative' , width:'100%',height: '250' , top: '12%', margintop: '10%',}}>
                 <View style={styles.border}>
-                <Text style={{ fontSize: 70,fontFamily: "RobotoCondensed_700Bold",top:'10%' }}>{problem}</Text>
+                <Text style={{ fontSize: 70,fontFamily: "RobotoCondensed_700Bold",top:'10%' , textAlign:'center', top:'20%'}}>{problem}</Text>
                 </View>
                 <Text style={{ fontSize: 170, color: "#DE2E2E", position: 'absolute',fontFamily: "RobotoCondensed_700Bold"}}>{ans}</Text>
             </View>
@@ -74,7 +74,7 @@ const ProblemGenerator = (input) => {
 const styles= StyleSheet.create({
     checkAnswerbutton:{
     position: 'absolute',
-    top: 380, 
+    top: 405, 
     width: 70,
     height: 70,
     right :1,
