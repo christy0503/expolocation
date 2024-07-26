@@ -146,7 +146,14 @@ const styles = StyleSheet.create({
     backgroundColor:'#459554',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-  }
+  },
+  backspeace:{
+    left:2,
+    top:-10,
+    width:30,
+    height:30,
+  },
 });
+
 
 export default App;
