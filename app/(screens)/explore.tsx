@@ -6,6 +6,8 @@ import MapView, { Circle } from "react-native-maps";
 import {useStationStore,useSelectedAlarmStore,useTrackingStore,} from "@/utils/store";
 import * as Location from 'expo-location'; 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
+import Icon2 from 'react-native-vector-icons/AntDesign';
+
 import { Audio } from 'expo-av';
 import { router } from "expo-router";
 
@@ -190,6 +192,11 @@ const App = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.back}>
+        <TouchableOpacity onPress={() => router.push("/index")}>
+        <Icon2 name="arrowleft" size={25} color="#000" />
+      </TouchableOpacity>
+      </View>
       <View style={styles.distance}>
         <View style={styles.distanceButton}>
           <Button title="500m" onPress={() => setRadius(500)} color="#459554" />
@@ -370,6 +377,13 @@ const styles = StyleSheet.create({
   selectContainer:{
     top:0,
     right:'40%',
+  },
+  back:{
+    color:"#000",
+    position: "absolute",
+    top:"7%",
+    left:"6%"
+    
   }
 });
 
