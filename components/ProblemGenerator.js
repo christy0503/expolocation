@@ -1,9 +1,9 @@
-// ProblemGenerator.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, Image} from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { router } from "expo-router";
 
 
-// 四則演算の関数定義
 const operations = {
     '+': (x, y) => x + y,
 };
@@ -12,20 +12,18 @@ const ProblemGenerator = (input) => {
     const [problem, setProblem] = useState('');
     const [answer, setAnswer] = useState('');
     const [ans, setAns] = useState('');
+    const [correctCount, setCorrectCount] = useState(0);
+    const navigation = useNavigation();
 
-
-    // ランダムな整数を生成する関数
     const getRandomInt = (min, max) => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    // ランダムな演算子を取得する関数
     const getRandomOperator = () => {
         const operators = ['+'];
         return operators[Math.floor(Math.random() * operators.length)];
     };
 
-    // 問題を生成してセットする関数
     const generateProblem = () => {
         const num1 = getRandomInt(1, 100);
         const num2 = getRandomInt(1, 100);
@@ -39,24 +37,29 @@ const ProblemGenerator = (input) => {
     };
 
     const checkAnswer = () => {
-        if(answer == input.input){
+        if (answer === input.input) {
             setAns("◯");
+            setCorrectCount((prevCount) => {
+                const newCount = prevCount + 1;
+                if (newCount >= 3) {
+                    router.push("@/app/(screens)/index.tsx");
+                }
+                return newCount;
+            });
             setTimeout(() => setAns(""), 1500);
         } else {
             setAns("×");
             setTimeout(() => setAns(""), 1500);
-
         }
 
-        setTimeout(()=>{
-            generateProblem()
-        },2000)
-    }
+        setTimeout(() => {
+            generateProblem();
+        }, 2000);
+    };
 
-    useEffect(()=>{
+    useEffect(() => {
         generateProblem();
-    },[])
-
+    }, []);
     return (
         <View>
             <View style={{justifyContent: 'center', alignItems: 'center', position: 'relative' , width:'100%',height: '250' , top: '12%', margintop: '10%',}}>

@@ -141,15 +141,15 @@ const App = () => {
   };
 
   const checkIfInsideCircle = () => {
-    if (!userLocation || !isTracking) return; 
-    const distance = getDistance(
-      { latitude: region.latitude, longitude: region.longitude },
-      { latitude: userLocation.latitude, longitude: userLocation.longitude }
-    );
-    if (distance <= circleRadius) {
-      setIsTracking(false);
-      // router.push("/problem"); 
-    }
+    // if (!userLocation || !isTracking) return; 
+    // const distance = getDistance(
+    //   { latitude: region.latitude, longitude: region.longitude },
+    //   { latitude: userLocation.latitude, longitude: userLocation.longitude }
+    // );
+    // if (distance <= circleRadius) {
+    //   setIsTracking(false);
+    //   // router.push("/problem"); 
+    // }
   };
 
   const getDistance = (point1, point2) => {
@@ -177,6 +177,15 @@ const App = () => {
     setIsTracking(true);
     Alert.alert('Started tracking your location.');
     // router.push("/problem"); 
+    if (!userLocation || !isTracking) return; 
+    const distance = getDistance(
+      { latitude: region.latitude, longitude: region.longitude },
+      { latitude: userLocation.latitude, longitude: userLocation.longitude }
+    );
+    if (distance <= circleRadius) {
+      setIsTracking(false);
+      router.push("/problem"); 
+    }
   };
 
   return (

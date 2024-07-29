@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   problemcontainer: {
     width: '45%',
     height: '5%',
-    backgroundColor: '#459554',
+    // backgroundColor: '#459554',
     top: '8%',
     borderTopRightRadius: 50,
     borderBottomRightRadius: 50,
