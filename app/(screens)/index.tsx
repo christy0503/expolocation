@@ -18,7 +18,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import useStationStore from "@/utils/store";
+import {useStationStore} from "@/utils/store";
 
 export default function HomeScreen() {
   const [address, setAddress] = useState();

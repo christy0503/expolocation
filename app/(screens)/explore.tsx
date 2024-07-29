@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Switch, Button, Alert,TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Switch, Button, Alert,TouchableOpacity, } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import RNPickerSelect from "react-native-picker-select";
 import MapView, { Circle } from "react-native-maps";
-import useStationStore from "@/utils/store";
+import {useStationStore,useSelectedAlarmStore,useTrackingStore,} from "@/utils/store";
 import * as Location from 'expo-location'; 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import { Audio } from 'expo-av';
-// import { router } from "expo-router";
+import { router } from "expo-router";
 
 
 const AlarmPicker = () => {
@@ -140,15 +141,14 @@ const App = () => {
   };
 
   const checkIfInsideCircle = () => {
-    if (!userLocation || !isTracking) return; // 如果沒有用戶位置或檢查已經停止，則返回
+    if (!userLocation || !isTracking) return; 
     const distance = getDistance(
       { latitude: region.latitude, longitude: region.longitude },
       { latitude: userLocation.latitude, longitude: userLocation.longitude }
     );
     if (distance <= circleRadius) {
-      // 停止進一步的檢查
       setIsTracking(false);
-      router.push("/problem"); // 導航到 /problem 頁面
+      // router.push("/problem"); 
     }
   };
 
@@ -171,10 +171,12 @@ const App = () => {
 
   const toggleAlarmSwitch = () => setIsAlarmOn((previousState) => !previousState);
   const toggleNotificationSwitch = () => setIsNotificationOn((previousState) => !previousState);
+  const navigation = useNavigation();
 
   const startTracking = () => {
     setIsTracking(true);
     Alert.alert('Started tracking your location.');
+    // router.push("/problem"); 
   };
 
   return (
