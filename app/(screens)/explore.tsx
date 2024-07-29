@@ -6,50 +6,80 @@ import useStationStore from "@/utils/store";
 import * as Location from 'expo-location'; 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import { Audio } from 'expo-av';
-import { router } from "expo-router";
+// import { router } from "expo-router";
 
-
-
-const soundFiles = {
-  "sound1.mp3": require('../../assets/sounds/sound1.mp3'),
-  "sound2.mp3": require('../../assets/sounds/sound2.mp3'),
-  "sound3.mp3": require('../../assets/sounds/sound3.mp3'),
-  "sound4.mp3": require('../../assets/sounds/sound4.mp3'),
-  "sound5.mp3": require('../../assets/sounds/sound5.mp3'),
-};
 
 const AlarmPicker = () => {
-  const [selectedSound, setSelectedSound] = useState(null);
   const [sound, setSound] = useState<Audio.Sound | undefined>(undefined);
-
-  const playSound = async (soundFile) => {
-    const { sound } = await Audio.Sound.createAsync(soundFiles[soundFile]);
+  const { value } = useSelectedAlarmStore();
+  const setValue = useSelectedAlarmStore((state) => state.setValue);
+ 
+ 
+  const playSound = async () => {
+    let filePath;
+    switch (value.slice(5, -4)) {
+      case "1":
+        filePath = require("../../assets/sounds/sound1.mp3");
+        console.log(1);
+        break;
+      case "2":
+        filePath = require("../../assets/sounds/sound2.mp3");
+        console.log(2);
+        break;
+      case "3":
+        filePath = require("../../assets/sounds/sound3.mp3");
+        console.log(3);
+        break;
+      case "4":
+        filePath = require("../../assets/sounds/sound4.mp3");
+        console.log(4);
+        break;
+      case "5":
+        filePath = require("../../assets/sounds/sound5.mp3");
+        console.log(5);
+        break;
+      default:
+        filePath = require("../../assets/sounds/sound1.mp3");
+        console.log("++");
+        break;
+    }
+    const { sound } = await Audio.Sound.createAsync(filePath);
     setSound(sound);
     await sound.playAsync();
   };
+ 
+ 
+ 
 
-  const handleValueChange = async (value) => {
-    setSelectedSound(value);
+
+  const handleValueChange = async (newValue: string) => {
+    setValue(newValue);
+    console.log(newValue.slice(5, -4));
     if (sound) {
       await sound.unloadAsync();
     }
-    playSound(value);
+    playSound();
   };
+ 
+ 
 
   return (
     <View style={styles.alarmContainer}>
       <Text style={styles.alarmText}>アラーム音の選択</Text>
       <View style={styles.selectContainer}>
       <RNPickerSelect
-        onValueChange={handleValueChange}
-        items={[
-          { label: "可愛い女の子の声", value: "sound1.mp3" },
-          { label: "デジタル時計1", value: "sound2.mp3" },
-          { label: "デジタル時計2", value: "sound4.mp3" },
-          { label: "アナログ時計", value: "sound3.mp3" },
-          { label: "激しくなり響く", value: "sound5.mp3" },
-        ]}
-      />
+       onValueChange={handleValueChange}
+       items={[
+         { label: "Sound1", value: "sound1.mp3" },
+         { label: "Sound2", value: "sound2.mp3" },
+         { label: "Sound3", value: "sound3.mp3" },
+         { label: "Sound4", value: "sound4.mp3" },
+         { label: "Sound5", value: "sound5.mp3" },
+       ]}
+     />
+
+
+
       </View>
     </View>
   );
@@ -58,9 +88,10 @@ const AlarmPicker = () => {
 const App = () => {
   const [isAlarmOn, setIsAlarmOn] = useState(false);
   const [isNotificationOn, setIsNotificationOn] = useState(false);
-  const [selectedSound, setSelectedSound] = useState("");
+  // const [selectedSound, setSelectedSound] = useState("");
   const [selectedProblems, setSelectedProblems] = useState(0);
   const { stationInfo } = useStationStore();
+
   const [circleRadius, setCircleRadius] = useState(0);
   const [region, setRegion] = useState({
     latitude: stationInfo ? stationInfo.y : 37.78825, 
@@ -69,7 +100,10 @@ const App = () => {
     longitudeDelta: 0.01,
   });
   const [userLocation, setUserLocation] = useState(null);
-  const [isTracking, setIsTracking] = useState(true); 
+  const isTracking = useTrackingStore();
+  const setIsTracking = useTrackingStore((state) => state.setIsTracking);
+ 
+
 
   useEffect(() => {
     if (isTracking) {
