@@ -177,8 +177,7 @@ const App = () => {
 
   const startTracking = () => {
     setIsTracking(true);
-    Alert.alert('Started tracking your location.');
-    // router.push("/problem"); 
+    Alert.alert('位置情報を取得します');
     if (!userLocation || !isTracking) return; 
     const distance = getDistance(
       { latitude: region.latitude, longitude: region.longitude },
