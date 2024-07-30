@@ -13,20 +13,25 @@ function App() {
   });
 
   useEffect(() => {
+    let soundObj;
+
     async function loadSound() {
       const { sound } = await Audio.Sound.createAsync(
         require('@/assets/sounds/sound1.mp3')
       );
+      soundObj = sound;
       setSound(sound);
       await sound.playAsync();
-      sound.setIsLoopingAsync(true); // Set the sound to loop
+      sound.setIsLoopingAsync(true);
     }
 
     loadSound();
 
     return () => {
-      if (sound) {
-        sound.unloadAsync();
+      if (soundObj) {
+        soundObj.stopAsync().then(() => {
+          soundObj.unloadAsync();
+        });
       }
     };
   }, []);
@@ -34,7 +39,6 @@ function App() {
   if (!fontsLoaded) {
     return null;
   }
-
   // 数字のボタンがクリックされた時の処理
   const handleNumberClick = (value) => {
     setInput((prevInput) => (prevInput === "0" ? value : prevInput + value));

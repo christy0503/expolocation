@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -19,6 +19,10 @@ import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import {useStationStore} from "@/utils/store";
+import Sound from 'react-native-sound';  // 假设你使用的是 react-native-sound 库
+import { Audio } from 'expo-av';
+
+
 
 export default function HomeScreen() {
   const [address, setAddress] = useState();
@@ -28,7 +32,30 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const { stationInfo } = useStationStore();
   const setStationInfo = useStationStore((state) => state.setStationInfo);
+  const [sound, setSound] = useState();
 
+  
+  useEffect(() => {
+    async function loadSound() {
+      const { sound } = await Audio.Sound.createAsync(
+        require('@/assets/sounds/sound1.mp3')
+      );
+      setSound(sound);
+      // Do not play the sound
+       //await sound.playAsync();
+       //sound.setIsLoopingAsync(false);
+    }
+
+    loadSound();
+
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, []);
+
+  
   const getAddressData = async (stationName: string) => {
     try {
       setLoaded(false);
