@@ -101,7 +101,7 @@ function App() {
             <Text style={styles.number}> </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleNumberClick('0')}>
-            <Text style={styles.number}>0</Text>
+            <Text style={styles.number2}>0</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleBackspace}>
             <Image style={styles.backspeace} source={require('@/assets/images/backspeace.png')} alt="" />
@@ -119,6 +119,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: "RobotoCondensed_700Bold",
     paddingBottom: 20,
+  },
+  number2:{
+    fontSize: 32,
+    marginVertical: 10,
+    color: '#fff',
+    fontFamily: "RobotoCondensed_700Bold",
+    paddingBottom: 20,  
+    left:12,
   },
   mainContainer: {
     width: "100%",
