@@ -7,82 +7,65 @@ import {useStationStore,useSelectedAlarmStore,useTrackingStore,} from "@/utils/s
 import * as Location from 'expo-location'; 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import Icon2 from 'react-native-vector-icons/AntDesign';
-
 import { Audio } from 'expo-av';
 import { router } from "expo-router";
 
 
 const AlarmPicker = () => {
   const [sound, setSound] = useState<Audio.Sound | undefined>(undefined);
-  const { value } = useSelectedAlarmStore();
   const setValue = useSelectedAlarmStore((state) => state.setValue);
- 
- 
-  const playSound = async () => {
+
+  const playSound = async (selectedValue: string) => {
     let filePath;
-    switch (value.slice(5, -4)) {
-      case "1":
+    switch (selectedValue) {
+      case "sound1.mp3":
         filePath = require("../../assets/sounds/sound1.mp3");
-        console.log(1);
         break;
-      case "2":
+      case "sound2.mp3":
         filePath = require("../../assets/sounds/sound2.mp3");
-        console.log(2);
         break;
-      case "3":
+      case "sound3.mp3":
         filePath = require("../../assets/sounds/sound3.mp3");
-        console.log(3);
         break;
-      case "4":
+      case "sound4.mp3":
         filePath = require("../../assets/sounds/sound4.mp3");
-        console.log(4);
         break;
-      case "5":
+      case "sound5.mp3":
         filePath = require("../../assets/sounds/sound5.mp3");
-        console.log(5);
         break;
       default:
         filePath = require("../../assets/sounds/sound1.mp3");
-        console.log("++");
         break;
     }
-    const { sound } = await Audio.Sound.createAsync(filePath);
-    setSound(sound);
-    await sound.playAsync();
-  };
- 
- 
- 
-
-
-  const handleValueChange = async (newValue: string) => {
-    setValue(newValue);
-    console.log(newValue.slice(5, -4));
+    
     if (sound) {
       await sound.unloadAsync();
     }
-    playSound();
+    
+    const { sound: newSound } = await Audio.Sound.createAsync(filePath);
+    setSound(newSound);
+    await newSound.playAsync();
   };
- 
- 
+
+  const handleValueChange = (newValue: string) => {
+    setValue(newValue);
+    playSound(newValue);
+  };
 
   return (
     <View style={styles.alarmContainer}>
       <Text style={styles.alarmText}>アラーム音の選択</Text>
       <View style={styles.selectContainer}>
-      <RNPickerSelect
-       onValueChange={handleValueChange}
-       items={[
-         { label: "Sound1", value: "sound1.mp3" },
-         { label: "Sound2", value: "sound2.mp3" },
-         { label: "Sound3", value: "sound3.mp3" },
-         { label: "Sound4", value: "sound4.mp3" },
-         { label: "Sound5", value: "sound5.mp3" },
-       ]}
-     />
-
-
-
+        <RNPickerSelect
+          onValueChange={handleValueChange}
+          items={[
+            { label: "Sound1", value: "sound1.mp3" },
+            { label: "Sound2", value: "sound2.mp3" },
+            { label: "Sound3", value: "sound3.mp3" },
+            { label: "Sound4", value: "sound4.mp3" },
+            { label: "Sound5", value: "sound5.mp3" },
+          ]}
+        />
       </View>
     </View>
   );
