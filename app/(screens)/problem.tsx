@@ -6,14 +6,14 @@ import { useFonts, RobotoCondensed_700Bold } from '@expo-google-fonts/roboto-con
 
 function App() {
   const [input, setInput] = useState("0"); // 現在の入力値
-  const [sound, setSound] = useState();
+  const [sound, setSound] = useState<Audio.Sound>();
 
   let [fontsLoaded] = useFonts({
     RobotoCondensed_700Bold,
   });
 
   useEffect(() => {
-    let soundObj;
+    let soundObj: Audio.Sound;
 
     async function loadSound() {
       const { sound } = await Audio.Sound.createAsync(
@@ -40,11 +40,11 @@ function App() {
     return null;
   }
   // 数字のボタンがクリックされた時の処理
-  const handleNumberClick = (value) => {
+  const handleNumberClick = (value: string) => {
     setInput((prevInput) => (prevInput === "0" ? value : prevInput + value));
   };
 
-  const handleOperatorClick = (parameter) => {
+  const handleOperatorClick = (parameter: string) => {
     if (input !== "0") {
       setInput((prevInput) => prevInput + parameter);
     }
