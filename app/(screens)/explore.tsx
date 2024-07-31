@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import { Audio } from 'expo-av';
 import { router } from "expo-router";
+import {  LocationObjectCoords } from "expo-location";
 
 
 const AlarmPicker = () => {
@@ -74,7 +75,6 @@ const AlarmPicker = () => {
 const App = () => {
   const [isAlarmOn, setIsAlarmOn] = useState(false);
   const [isNotificationOn, setIsNotificationOn] = useState(false);
-  // const [selectedSound, setSelectedSound] = useState("");
   const [selectedProblems, setSelectedProblems] = useState(0);
   const { stationInfo } = useStationStore();
 
@@ -85,7 +85,7 @@ const App = () => {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
-  const [userLocation, setUserLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState<LocationObjectCoords | null>(null);
   const isTracking = useTrackingStore();
   const setIsTracking = useTrackingStore((state) => state.setIsTracking);
  
@@ -114,7 +114,7 @@ const App = () => {
     }
   }, [isTracking, userLocation, region, circleRadius]);
 
-  const setRadius = (radius) => {
+  const setRadius = (radius: number) => {
     Alert.alert(`${radius} メートル`);
     const scaleFactor = 0.00002;
     setCircleRadius(radius);
@@ -137,8 +137,8 @@ const App = () => {
     // }
   };
 
-  const getDistance = (point1, point2) => {
-    const toRad = (value) => value * Math.PI / 180;
+  const getDistance = (point1:LocationObjectCoords, point2:LocationObjectCoords) => {
+    const toRad = (value: number) => value * Math.PI / 180;
     const lat1 = point1.latitude;
     const lon1 = point1.longitude;
     const lat2 = point2.latitude;
@@ -163,9 +163,10 @@ const App = () => {
     Alert.alert('位置情報を取得します');
     if (!userLocation || !isTracking) return; 
     const distance = getDistance(
-      { latitude: region.latitude, longitude: region.longitude },
-      { latitude: userLocation.latitude, longitude: userLocation.longitude }
+      { latitude: region.latitude, longitude: region.longitude, altitude: 0, accuracy: 0, altitudeAccuracy: 0, heading: 0, speed: 0 },
+      { latitude: userLocation.latitude, longitude: userLocation.longitude, altitude: 0, accuracy: 0, altitudeAccuracy: 0, heading: 0, speed: 0 }
     );
+    console.log(`distance:${distance}, circleRadius:${circleRadius}`)
     if (distance <= circleRadius) {
       setIsTracking(false);
       router.push("/problem"); 
