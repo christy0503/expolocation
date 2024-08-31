@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  TextInput,
-  Button,
-  Alert,
-  TouchableOpacity,
-  View,
-  ScrollView,
-  FlatList,
-  Text,
-} from "react-native";
+import {Image,StyleSheet,TextInput,Button,Alert,TouchableOpacity,View,ScrollView,FlatList,Text,} from "react-native";
 import { api } from "@/utils/axios";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
